@@ -11,9 +11,21 @@ import (
 
 // CreateMember 添加成员
 func CreateMember(c *gin.Context) {
+
+	auth, err := c.Cookie("camp-session")
+	if err != nil {
+		c.JSON(http.StatusForbidden, resp.CreateMemberRes(types.PermDenied, ""))
+		return
+	}
+	userType := service.GetUserTypeByCookie(auth)
+	if userType != 1 {
+		c.JSON(http.StatusForbidden, resp.CreateMemberRes(types.PermDenied, ""))
+		return
+	}
+
 	request := types.CreateMemberRequest{}
 
-	err := c.ShouldBind(&request)
+	err = c.ShouldBind(&request)
 	if err != nil || !helper.StrLengthValidator(request.Nickname, 4, 20) {
 		c.JSON(http.StatusUnprocessableEntity, resp.CreateMemberRes(types.ParamInvalid, ""))
 		return

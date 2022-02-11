@@ -63,3 +63,16 @@ func Whoami(auth string) (types.TMember, types.ErrNo) {
 
 	return tMember, types.OK
 }
+
+func GetUserTypeByCookie(auth string) types.UserType {
+
+	session := dao.GetSessionByAuth(auth)
+	if session.ID == 0 {
+		return 0
+	}
+	user := dao.GetMemberByID(session.UserID)
+	if user.ID == 0 {
+		return 0
+	}
+	return types.UserType(user.UserType)
+}

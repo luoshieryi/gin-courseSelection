@@ -16,11 +16,11 @@ func CreateMember(member model.Member) (int64, error) {
 
 // GetMemberByUsername 通过用户名查询用户
 func GetMemberByUsername(username string) model.Member {
-	user := model.Member{}
+	member := model.Member{}
 
-	model.DB.Find(&user, "username = ?", username)
+	model.DB.Find(&member, "username = ?", username)
 
-	return user
+	return member
 }
 
 // GetMemberByID 通过ID查询用户

@@ -46,3 +46,4 @@
 接了一点 react 咕咕咕中
 
 - validator 验证字符串长度时自动匹配了字符的长度, 而不是字节长度, 为nickname写了一个验证器
+- 仅有 CreateMember 需要鉴权, 鉴权方法内置在相关 api 与 service 中, 减少其他请求的开销
