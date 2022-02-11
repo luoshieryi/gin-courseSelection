@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"project/service"
 	"project/types"
+	"project/util/helper"
 	"project/util/resp"
 )
 
@@ -13,7 +14,7 @@ func CreateMember(c *gin.Context) {
 	request := types.CreateMemberRequest{}
 
 	err := c.ShouldBind(&request)
-	if err != nil {
+	if err != nil || !helper.StrLengthValidator(request.Nickname, 4, 20) {
 		c.JSON(http.StatusUnprocessableEntity, resp.CreateMemberRes(types.ParamInvalid, ""))
 		return
 	}
@@ -69,7 +70,7 @@ func UpdateMember(c *gin.Context) {
 	request := types.UpdateMemberRequest{}
 
 	err := c.ShouldBind(&request)
-	if err != nil {
+	if err != nil || !helper.StrLengthValidator(request.Nickname, 4, 20) {
 		c.JSON(http.StatusUnprocessableEntity, resp.UpdateMemberRes(types.ParamInvalid))
 		return
 	}

@@ -48,3 +48,10 @@ func RandStr(n int) string {
 	}
 	return *(*string)(unsafe.Pointer(&b))
 }
+
+func StrLengthValidator(str string, min int, max int) bool {
+	if len(str) >= min && len(str) <= max {
+		return true
+	}
+	return false
+}

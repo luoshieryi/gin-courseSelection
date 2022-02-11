@@ -32,8 +32,8 @@
 ### 接口实现
 - 内嵌匿名结构体的初始化有点麻烦
 - 函数参数不支持默认值
-- 不能 throw-catch 的error处理 (多返回值成最大赢家)
-- 
+- 不能 throw-catch 的error处理, 使用多返回值层级返回
+- 实现了member, auth 的 8 个接口
 
 ### 参数绑定与验证
 使用 shouldBind 绑定参数与结构体, 在 binding 标签中设置校验规则(基于validate)
@@ -41,3 +41,8 @@
 - 例如 ``` Username string   `form:"Username" json:"Username" binding:"required,min=8,max=20,alpha"` ``` 设置传参方式为form/json, 表单参数/json字段名为Username, [8,20], 仅包含字母
 - 实际shouldBind会自动匹配绑定方式, from/json标签的作用仅指定字段名称, 也可以使用shouldBindJson具体指定绑定方式
 - 校验同时包括大小写、数字...`alphanum,containsany=abcdefghijklmnopqrstuvwxyz,containsany=0123456789,containsany=ABCDEFGHIJKLMNOPQRSTUVWXYZ"`
+
+## 2.11 day2
+接了一点 react 咕咕咕中
+
+- validator 验证字符串长度时自动匹配了字符的长度, 而不是字节长度, 为nickname写了一个验证器

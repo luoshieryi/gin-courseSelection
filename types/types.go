@@ -66,7 +66,7 @@ const (
 // 只有管理员才能添加
 
 type CreateMemberRequest struct {
-	Nickname string   `form:"Nickname" json:"Nickname" binding:"required,min=4,max=20"`                                                                                                        // required，不小于 4 位 不超过 20 位
+	Nickname string   `form:"Nickname" json:"Nickname" binding:"required"`                                                                                                                     // required，不小于 4 位 不超过 20 位
 	Username string   `form:"Username" json:"Username" binding:"required,min=8,max=20,alpha"`                                                                                                  // required，只支持大小写，长度不小于 8 位 不超过 20 位
 	Password string   `form:"Password" json:"Password" binding:"required,min=8,alphanum,containsany=abcdefghijklmnopqrstuvwxyz,containsany=0123456789,containsany=ABCDEFGHIJKLMNOPQRSTUVWXYZ"` // required，同时包括大小写、数字，长度不少于 8 位 不超过 20 位
 	UserType UserType `form:"UserType" json:"UserType" binding:"required,oneof=1 2 3"`                                                                                                         // required, 枚举值
@@ -110,7 +110,7 @@ type GetMemberListResponse struct {
 
 type UpdateMemberRequest struct {
 	UserID   string `binding:"required,numeric"`
-	Nickname string `binding:"required,min=4,max=20"`
+	Nickname string `binding:"required"`
 }
 
 type UpdateMemberResponse struct {
