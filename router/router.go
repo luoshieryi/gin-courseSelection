@@ -27,7 +27,7 @@ func Init(r *gin.Engine) {
 	g.POST("/teacher/bind_course")
 	g.POST("/teacher/unbind_course")
 	g.GET("/teacher/get_course")
-	g.POST("/course/schedule")
+	g.POST("/course/schedule", api.GetScheduleCourse)
 
 	// 抢课
 	g.POST("/student/book_course")
