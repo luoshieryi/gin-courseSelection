@@ -46,7 +46,7 @@ func DeleteTeacherByID(id int64) error {
 // GetCourseByTeacherId 得到老师的ID对应的课程
 func GetCourseByTeacherId(TeacherID int64) ([]*types.TCourse, error) {
 	res := make([]model.Course, 0)
-	err := model.DB.Find(&res, "TeacherID = ?", TeacherID).Error
+	err := model.DB.Find(&res, "teacher_id = ?", TeacherID).Error
 	courses := make([]*types.TCourse, 0)
 	for _, data := range res {
 		course := types.TCourse{CourseID: strconv.FormatInt(data.ID, 10), Name: data.Name, TeacherID: strconv.FormatInt(data.TeacherID, 10)}

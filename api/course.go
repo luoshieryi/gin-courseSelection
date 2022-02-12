@@ -91,4 +91,5 @@ func GetTeacherCourse(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, resp.GetTeacherCourseRes(errNo, TCourses))
 		return
 	}
+	c.JSON(http.StatusOK, resp.GetTeacherCourseRes(errNo, TCourses))
 }
