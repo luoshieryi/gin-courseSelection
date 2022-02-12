@@ -111,6 +111,11 @@ func DeleteMember(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, resp.DeleteMemberRes(errNo))
 		return
 	}
+	errNo = service.DeleteCookies(request.UserID)
+	if errNo != 0 {
+		c.JSON(http.StatusBadRequest, resp.DeleteMemberRes(errNo))
+		return
+	}
 
 	c.JSON(http.StatusOK, resp.DeleteMemberRes(errNo))
 

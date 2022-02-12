@@ -33,3 +33,8 @@ func DeleteSessionByID(id int64) error {
 	err := model.DB.Delete(&model.Session{ID: id}).Error
 	return err
 }
+
+func DeleteSessionByUserID(userID int64) error {
+	err := model.DB.Delete(&model.Session{UserID: userID}).Error
+	return err
+}

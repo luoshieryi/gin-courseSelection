@@ -132,8 +132,8 @@ type DeleteMemberResponse struct {
 // 登录
 
 type LoginRequest struct {
-	Username string `binding:"required"`
-	Password string `binding:"required"`
+	Username string `binding:"required,min=8,max=20,alpha"`                                                                                                  // required，只支持大小写，长度不小于 8 位 不超过 20 位
+	Password string `binding:"required,min=8,alphanum,containsany=abcdefghijklmnopqrstuvwxyz,containsany=0123456789,containsany=ABCDEFGHIJKLMNOPQRSTUVWXYZ"` // required，同时包括大小写、数字，长度不少于 8 位 不超过 20 位
 }
 
 // 登录成功后需要 Set-Cookie("camp-session", ${value})
