@@ -11,6 +11,7 @@ import (
 func GetScheduleCourse(c *gin.Context) {
 	request := types.ScheduleCourseRequest{}
 	err := c.ShouldBind(&request)
+
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, resp.ScheduleCourseRes(types.ParamInvalid, map[string]string{}))
 		return
@@ -21,6 +22,5 @@ func GetScheduleCourse(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, resp.ScheduleCourseRes(errNo, Data))
 		return
 	}
-
 	c.JSON(http.StatusOK, resp.ScheduleCourseRes(errNo, Data))
 }
