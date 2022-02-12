@@ -100,6 +100,9 @@ func DeleteMember(request types.DeleteMemberRequest) types.ErrNo {
 	if member.ID == 0 {
 		return types.UserNotExisted
 	}
+	if member.Deleted {
+		return types.UserHasDeleted
+	}
 
 	member.Deleted = true
 

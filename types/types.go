@@ -190,7 +190,7 @@ type CreateCourseResponse struct {
 // Method: Get
 
 type GetCourseRequest struct {
-	CourseID string `binding:"required, numeric"`
+	CourseID string `binding:"required,numeric"`
 }
 
 type GetCourseResponse struct {
@@ -204,8 +204,8 @@ type GetCourseResponse struct {
 // 一个老师可以绑定多个课程 , 不过，一个课程只能绑定在一个老师下面
 
 type BindCourseRequest struct {
-	CourseID  string `binding:"required, numeric"`
-	TeacherID string `binding:"required, numeric"`
+	CourseID  string `binding:"required,numeric"`
+	TeacherID string `binding:"required,numeric"`
 }
 
 type BindCourseResponse struct {
@@ -216,8 +216,8 @@ type BindCourseResponse struct {
 // Method： Post
 
 type UnbindCourseRequest struct {
-	CourseID  string `binding:"required, numeric"`
-	TeacherID string `binding:"required, numeric"`
+	CourseID  string `binding:"required,numeric"`
+	TeacherID string `binding:"required,numeric"`
 }
 
 type UnbindCourseResponse struct {
@@ -228,7 +228,7 @@ type UnbindCourseResponse struct {
 // Method：Get
 
 type GetTeacherCourseRequest struct {
-	TeacherID string `binding:"required, numeric"`
+	TeacherID string `binding:"required,numeric"`
 }
 
 type GetTeacherCourseResponse struct {
@@ -251,8 +251,8 @@ type ScheduleCourseResponse struct {
 }
 
 type BookCourseRequest struct {
-	StudentID string `binding:"required, numeric"`
-	CourseID  string `binding:"required, numeric"`
+	StudentID string `binding:"required,numeric"`
+	CourseID  string `binding:"required,numeric"`
 }
 
 // 课程已满返回 CourseNotAvailable
@@ -262,7 +262,7 @@ type BookCourseResponse struct {
 }
 
 type GetStudentCourseRequest struct {
-	StudentID string `binding:"required, numeric"`
+	StudentID string `binding:"required,numeric"`
 }
 
 type GetStudentCourseResponse struct {
