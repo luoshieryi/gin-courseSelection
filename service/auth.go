@@ -3,7 +3,6 @@ package service
 import (
 	"project/dao"
 	"project/types"
-	"project/util/hash"
 	"strconv"
 )
 
@@ -14,8 +13,7 @@ func Login(request types.LoginRequest) (string, string, types.ErrNo) {
 		return "", "0", types.WrongPassword
 	}
 
-	err := hash.NewHash().Check([]byte(user.Password), []byte(request.Password))
-	if err != nil {
+	if user.Password != request.Password {
 		return "", strconv.FormatInt(user.ID, 10), types.WrongPassword
 	}
 
@@ -75,4 +73,17 @@ func GetUserTypeByCookie(auth string) types.UserType {
 		return 0
 	}
 	return types.UserType(user.UserType)
+}
+
+func DeleteCookies(userID string) types.ErrNo {
+	id, err := strconv.ParseInt(userID, 10, 64)
+	if err != nil {
+		return types.CourseHasBound
+	}
+
+	err = dao.DeleteSessionByUserID(id)
+	if err != nil {
+		return types.CourseHasBound
+	}
+	return types.OK
 }
