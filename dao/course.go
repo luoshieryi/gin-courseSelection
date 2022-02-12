@@ -37,6 +37,12 @@ func UpdateCourse(course model.Course) error {
 	return err
 }
 
+func DeleteTeacherByID(id int64) error {
+	err := model.DB.Model(&model.Course{}).Where("id = ?", id).Update(map[string]interface{}{"TeacherID": 0}).Error
+
+	return err
+}
+
 // GetCourseByTeacherId 得到老师的ID对应的课程
 func GetCourseByTeacherId(TeacherID int64) ([]*types.TCourse, error) {
 	res := make([]model.Course, 0)

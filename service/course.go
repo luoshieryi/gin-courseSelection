@@ -65,7 +65,10 @@ func BindCourse(request types.BindCourseRequest) types.ErrNo {
 	}
 
 	res.TeacherID = teacherId
-	dao.UpdateCourse(res)
+	err = dao.UpdateCourse(res)
+	if err != nil {
+		return types.UnknownError
+	}
 	return types.OK
 }
 
@@ -92,7 +95,11 @@ func UnbindCourse(request types.UnbindCourseRequest) types.ErrNo {
 		return types.UnknownError
 	}
 	res.TeacherID = 0
-	dao.UpdateCourse(res)
+	println(res.ID)
+	err = dao.DeleteTeacherByID(res.ID)
+	if err != nil {
+		return types.UnknownError
+	}
 	return types.OK
 }
 
