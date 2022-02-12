@@ -43,17 +43,14 @@ func Init() {
 func migrate() {
 	DB.AutoMigrate(&Member{})
 	DB.AutoMigrate(&Session{})
-	DB.AutoMigrate(&Course{})
+
+	InitCourse()
 }
 
 func Close() {
-	defer func(DB *gorm.DB) {
-		err := DB.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(DB)
+	defer DB.Close()
 }
+
 
 func init() {
 	Init()

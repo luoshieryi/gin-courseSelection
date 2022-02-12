@@ -21,15 +21,15 @@ func Init(r *gin.Engine) {
 	g.GET("/auth/whoami", api.Whoami)
 
 	// 排课
-	g.POST("/course/create", api.CreateCourse)
-	g.GET("/course/get", api.GetCourse)
+	g.POST("/course/create")
+	g.GET("/course/get")
 
 	g.POST("/teacher/bind_course")
 	g.POST("/teacher/unbind_course")
 	g.GET("/teacher/get_course")
-	g.POST("/course/schedule", api.GetScheduleCourse)
+	g.POST("/course/schedule")
 
 	// 抢课
-	g.POST("/student/book_course")
-	g.GET("/student/course")
+	g.POST("/student/book_course",api.BookCourse)
+	g.GET("/student/course",api.GetCourse)
 }

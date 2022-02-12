@@ -33,15 +33,3 @@ func LogoutRes(code types.ErrNo) types.LogoutResponse {
 func WhoamiRes(code types.ErrNo, data types.TMember) types.WhoAmIResponse {
 	return types.WhoAmIResponse{Code: code, Data: data}
 }
-
-func CreateCourseRes(code types.ErrNo, courseID string) types.CreateCourseResponse {
-	return types.CreateCourseResponse{Code: code, Data: struct{ CourseID string }{CourseID: courseID}}
-}
-
-func GetCourseRes(code types.ErrNo, data types.TCourse) types.GetCourseResponse {
-	return types.GetCourseResponse{Code: code, Data: data}
-}
-
-func ScheduleCourseRes(code types.ErrNo, data map[string]string) types.ScheduleCourseResponse {
-	return types.ScheduleCourseResponse{Code: code, Data: data}
-}
