@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-// CreateCourse 创建用户
+// CreateCourse 创建课程
 func CreateCourse(request types.CreateCourseRequest) (string, types.ErrNo) {
 	course := dao.GetCourseByName(request.Name)
 	if course.ID != 0 {
@@ -43,4 +43,68 @@ func GetCourse(request types.GetCourseRequest) (types.TCourse, types.ErrNo) {
 		TeacherID: strconv.FormatInt(course.TeacherID, 10),
 	}
 	return res, types.OK
+}
+
+func BindCourse(request types.BindCourseRequest) types.ErrNo {
+	Id, err := strconv.ParseInt(request.CourseID, 10, 64)
+	if err != nil {
+		return types.UnknownError
+	}
+
+	teacherId, err := strconv.ParseInt(request.TeacherID, 10, 64)
+	if err != nil {
+		return types.UnknownError
+	}
+
+	res := dao.GetCourseById(Id)
+	if res.ID == 0 {
+		return types.CourseNotExisted
+	}
+	if res.TeacherID != 0 {
+		return types.CourseHasBound
+	}
+
+	res.TeacherID = teacherId
+	dao.UpdateCourse(res)
+	return types.OK
+}
+
+//其实teacherid用不上
+func UnbindCourse(request types.UnbindCourseRequest) types.ErrNo {
+	Id, err := strconv.ParseInt(request.CourseID, 10, 64)
+	if err != nil {
+		return types.UnknownError
+	}
+
+	teacherId, err := strconv.ParseInt(request.TeacherID, 10, 64)
+	if err != nil {
+		return types.UnknownError
+	}
+
+	res := dao.GetCourseById(Id)
+	if res.ID == 0 {
+		return types.CourseNotExisted
+	}
+	if res.TeacherID == 0 {
+		return types.CourseNotBind
+	}
+	if res.TeacherID != teacherId {
+		return types.UnknownError
+	}
+	res.TeacherID = 0
+	dao.UpdateCourse(res)
+	return types.OK
+}
+
+func GetTeacherCourse(request types.GetTeacherCourseRequest) ([]*types.TCourse, types.ErrNo) {
+	tcource := make([]*types.TCourse, 0)
+	TeacherID, err := strconv.ParseInt(request.TeacherID, 10, 64)
+	if err != nil {
+		return tcource, types.UnknownError
+	}
+	tcource, err = dao.GetCourseByTeacherId(TeacherID)
+	if err != nil {
+		return tcource, types.UnknownError
+	}
+	return tcource, types.OK
 }
