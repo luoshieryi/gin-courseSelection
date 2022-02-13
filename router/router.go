@@ -21,8 +21,8 @@ func Init(r *gin.Engine) {
 	g.GET("/auth/whoami", api.Whoami)
 
 	// 排课
-	g.POST("/course/create")
-	g.GET("/course/get")
+	g.POST("/course/create", api.CreateCourse)
+	g.GET("/course/get", api.GetCourse)
 
 	g.POST("/teacher/bind_course", api.BindCourse)
 	g.POST("/teacher/unbind_course", api.UnbindCourse)
@@ -30,6 +30,6 @@ func Init(r *gin.Engine) {
 	g.POST("/course/schedule", api.GetScheduleCourse)
 
 	// 抢课
-	g.POST("/student/book_course",api.BookCourse)
-	g.GET("/student/course",api.GetCourse)
+	g.POST("/student/book_course", api.BookCourse)
+	g.GET("/student/course", api.GetCourse)
 }
