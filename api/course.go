@@ -2,8 +2,10 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"project/service"
 	"project/types"
+	"project/util/resp"
 )
 
 /*
@@ -12,33 +14,41 @@ import (
  @Description: 课程相关
 */
 
-// GetCourse 获取课程
-func GetCourse(c *gin.Context) {
+func CreateCourse(c *gin.Context) {
 
-}
+	request := types.CreateCourseRequest{}
 
-// BookCourse 抢课
-func BookCourse(c *gin.Context) {
-
-	q:=types.BookCourseRequest{}
-	if err := c.ShouldBind(&q);err!=nil{
-		c.JSON(200,types.BookCourseResponse{Code: types.ParamInvalid})
+	err := c.ShouldBind(&request)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, resp.CreateCourseRes(types.ParamInvalid, ""))
 		return
 	}
 
-
-	// 抢课
-	switch service.BookCourse(q.CourseID,q.StudentID) {
-	case service.CourseOver:
-		c.JSON(200,types.BookCourseResponse{Code: types.CourseNotAvailable})
-	case service.StuHaveCourse:
-		c.JSON(200,types.BookCourseResponse{Code: types.StudentHasCourse})
-	case nil:
-		c.JSON(200,types.BookCourseResponse{Code: types.OK})
-	default:
-		c.JSON(200,types.BookCourseResponse{Code: types.UnknownError})
+	id, errNo := service.CreateCourse(request)
+	if errNo != 0 {
+		c.JSON(http.StatusBadRequest, resp.CreateMemberRes(errNo, id))
+		return
 	}
 
+	c.JSON(http.StatusOK, resp.CreateMemberRes(errNo, id))
+}
+
+func GetCourse(c *gin.Context) {
+	request := types.GetCourseRequest{}
+
+	err := c.ShouldBind(&request)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, resp.GetCourseRes(types.ParamInvalid, types.TCourse{}))
+		return
+	}
+
+	tCourse, errNo := service.GetCourse(request)
+	if errNo != 0 {
+		c.JSON(http.StatusBadRequest, resp.GetCourseRes(errNo, tCourse))
+		return
+	}
+
+	c.JSON(http.StatusOK, resp.GetCourseRes(errNo, tCourse))
 }
 
 func BindCourse(c *gin.Context) {
@@ -87,5 +97,50 @@ func GetTeacherCourse(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, resp.GetTeacherCourseRes(errNo, TCourses))
 		return
 	}
-	c.JSON(http.StatusOK, resp.GetTeacherCourseRes(errNo, TCourses))
+}
+
+// BookCourse 抢课
+func BookCourse(c *gin.Context) {
+
+	q := types.BookCourseRequest{}
+	if err := c.ShouldBind(&q); err != nil {
+		c.JSON(200, types.BookCourseResponse{Code: types.ParamInvalid})
+		return
+	}
+
+	// 抢课
+	switch service.BookCourse(q.CourseID, q.StudentID) {
+	case service.CourseOver:
+		c.JSON(200, types.BookCourseResponse{Code: types.CourseNotAvailable})
+	case service.StuHaveCourse:
+		c.JSON(200, types.BookCourseResponse{Code: types.StudentHasCourse})
+	case nil:
+		c.JSON(200, types.BookCourseResponse{Code: types.OK})
+	default:
+		c.JSON(200, types.BookCourseResponse{Code: types.UnknownError})
+	}
+
+}
+
+// BookCourse 抢课
+func BookCourse(c *gin.Context) {
+
+	q := types.BookCourseRequest{}
+	if err := c.ShouldBind(&q); err != nil {
+		c.JSON(200, types.BookCourseResponse{Code: types.ParamInvalid})
+		return
+	}
+
+	// 抢课
+	switch service.BookCourse(q.CourseID, q.StudentID) {
+	case service.CourseOver:
+		c.JSON(200, types.BookCourseResponse{Code: types.CourseNotAvailable})
+	case service.StuHaveCourse:
+		c.JSON(200, types.BookCourseResponse{Code: types.StudentHasCourse})
+	case nil:
+		c.JSON(200, types.BookCourseResponse{Code: types.OK})
+	default:
+		c.JSON(200, types.BookCourseResponse{Code: types.UnknownError})
+	}
+
 }

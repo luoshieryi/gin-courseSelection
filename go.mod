@@ -13,6 +13,10 @@ require (
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-playground/validator/v10 v10.4.1
-	github.com/gomodule/redigo v1.8.8
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+)
+
+require (
+	github.com/gomodule/redigo v1.8.8
+	github.com/panjf2000/ants v1.2.1
 )

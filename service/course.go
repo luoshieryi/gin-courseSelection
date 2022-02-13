@@ -3,13 +3,16 @@ package service
 import (
 	"errors"
 	"project/dao"
+	"project/model"
+	"project/types"
 	"project/util/logs"
+	"strconv"
 	"sync"
 )
 
 var (
-	CourseOver = errors.New("Course No Cap")
-	StuHaveCourse=errors.New("Stu have this Course")
+	CourseOver    = errors.New("Course No Cap")
+	StuHaveCourse = errors.New("Stu have this Course")
 )
 
 // CreateCourse 创建课程
@@ -19,105 +22,35 @@ func CreateCourse(request types.CreateCourseRequest) (string, types.ErrNo) {
 		return strconv.FormatInt(course.ID, 10), types.UnknownError
 	}
 
-func BookCourse(courseId, stuId string) error {
-	//TODO: 查看是否绑定
-	if dao.StuHaveCourse(courseId,stuId){
-		return StuHaveCourse
+	entity := model.Course{
+		Name: request.Name,
+		Cap:  request.Cap,
 	}
-	// 抢课
-	info, err := getCourseInfo(courseId)
+	id, err := dao.CreateCourse(entity)
 	if err != nil {
-		return err
+		return "", types.UnknownError
 	}
-	// 课程抢完了
-	if info.isOver {
-		return CourseOver
+	return strconv.FormatInt(id, 10), types.OK
+}
+
+func GetCourse(request types.GetCourseRequest) (types.TCourse, types.ErrNo) {
+	tCourse := types.TCourse{}
+	_id, err := strconv.ParseInt(request.CourseID, 10, 64)
+	if err != nil {
+		return tCourse, types.UnknownError
 	}
 
-	return info.bookOne(courseId, stuId)
-
-}
-
-type courseInfo struct {
-	cap    int
-	left   int // 剩余
-	leftCh chan int
-	done   chan struct{}
-	close  chan struct{}
-	lock   *sync.Mutex
-	isOver bool
-}
-
-var allCourse = sync.Map{}
-
-func getCourseInfo(courseId string) (*courseInfo, error) {
-	var info *courseInfo
-	val, ok := allCourse.Load(courseId)
-	if !ok {
-		ccap, err := dao.GetCourseCap(courseId)
-		if err != nil {
-			logs.PrintLogErr(logs.Service, courseId+"get Cap error", err)
-			return info, err
-		}
-		info = &courseInfo{
-			cap:    ccap,
-			left:   ccap,
-			leftCh: make(chan int),
-			done:   make(chan struct{}),
-			close:  make(chan struct{}),
-			lock:   &sync.Mutex{},
-		}
-		allCourse.Store(courseId, &info)
-		info.monitor() // 开始监听
+	course := dao.GetCourseById(_id)
+	if course.ID == 0 {
+		return tCourse, types.CourseNotExisted
 	}
-	info, ok = val.(*courseInfo)
-	if !ok {
-		return info, errors.New("Unknown error")
+
+	res := types.TCourse{
+		CourseID:  strconv.FormatInt(course.ID, 10),
+		Name:      course.Name,
+		TeacherID: strconv.FormatInt(course.TeacherID, 10),
 	}
-	return info, nil
-}
-
-// 执行抢课
-func (c *courseInfo) bookOne(courseId,stuId string) error {
-	c.lock.Lock()
-	defer c.lock.Unlock()
-	if c.isOver || c.getLeft() == 0 {
-		return CourseOver
-	}
-	c.getOne()
-	// DB写入肯定比抢课的流程慢
-	return dao.BookCourse(courseId, stuId)
-}
-
-func (c *courseInfo) getOne() {
-	c.done <- struct{}{}
-}
-
-func (c *courseInfo) getLeft() int {
-	l := <-c.leftCh
-	return l
-}
-
-func (c *courseInfo) monitor() {
-	go c.bookCourse()
-}
-
-func (c *courseInfo) bookCourse() {
-	for {
-		select {
-		case <-c.done:
-			c.left -= 1
-			//fmt.Println(c.left)
-			if c.left == 0 {
-				c.isOver = true
-				close(c.close)
-			}
-		case c.leftCh <- c.left: // 保持同步
-		case <-c.close:
-			//fmt.Println("close")
-			return
-		}
-	}
+	return res, types.OK
 }
 
 func BindCourse(request types.BindCourseRequest) types.ErrNo {
@@ -189,4 +122,107 @@ func GetTeacherCourse(request types.GetTeacherCourseRequest) ([]*types.TCourse, 
 		return tcource, types.UnknownError
 	}
 	return tcource, types.OK
+}
+
+
+
+
+func BookCourse(courseId, stuId string) error {
+	if dao.StuHaveCourse(courseId, stuId) {
+		return StuHaveCourse
+	}
+	// 抢课
+	info, err := getCourseInfo(courseId)
+	if err != nil {
+		return err
+	}
+	// 课程抢完了
+	if info.isOver {
+		return CourseOver
+	}
+
+	return info.bookOne(courseId, stuId)
+
+}
+
+type courseInfo struct {
+	cap    int
+	left   int // 剩余
+	leftCh chan int
+	done   chan struct{}
+	close  chan struct{}
+	lock   *sync.Mutex
+	isOver bool
+}
+
+var allCourse = sync.Map{}
+
+func getCourseInfo(courseId string) (*courseInfo, error) {
+	var info *courseInfo
+	val, ok := allCourse.Load(courseId)
+	if !ok {
+		ccap, err := dao.GetCourseCap(courseId)
+		if err != nil {
+			logs.PrintLogErr(logs.Service, courseId+"get Cap error", err)
+			return info, err
+		}
+		info = &courseInfo{
+			cap:    ccap,
+			left:   ccap,
+			leftCh: make(chan int),
+			done:   make(chan struct{}),
+			close:  make(chan struct{}),
+			lock:   &sync.Mutex{},
+		}
+		allCourse.Store(courseId, &info)
+		info.monitor() // 开始监听
+	}
+	info, ok = val.(*courseInfo)
+	if !ok {
+		return info, errors.New("Unknown error")
+	}
+	return info, nil
+}
+
+// 执行抢课
+func (c *courseInfo) bookOne(courseId, stuId string) error {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	if c.isOver || c.getLeft() == 0 {
+		return CourseOver
+	}
+	c.getOne()
+	// DB写入肯定比抢课的流程慢
+	return dao.BookCourse(courseId, stuId)
+}
+
+func (c *courseInfo) getOne() {
+	c.done <- struct{}{}
+}
+
+func (c *courseInfo) getLeft() int {
+	l := <-c.leftCh
+	return l
+}
+
+func (c *courseInfo) monitor() {
+	go c.bookCourse()
+}
+
+func (c *courseInfo) bookCourse() {
+	for {
+		select {
+		case <-c.done:
+			c.left -= 1
+			//fmt.Println(c.left)
+			if c.left == 0 {
+				c.isOver = true
+				close(c.close)
+			}
+		case c.leftCh <- c.left: // 保持同步
+		case <-c.close:
+			//fmt.Println("close")
+			return
+		}
+	}
 }
