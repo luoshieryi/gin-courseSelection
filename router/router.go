@@ -34,4 +34,5 @@ func Init(r *gin.Engine) {
 		g.POST("/student/book_course", api.BookCourse)
 		g.GET("/student/course", api.GetCourse)
 	}
+
 }

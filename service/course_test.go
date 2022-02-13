@@ -12,7 +12,6 @@ import (
 */
 
 var c=courseInfo{
-
 	cap:    10,
 	left:   10,
 	leftCh: make(chan int),

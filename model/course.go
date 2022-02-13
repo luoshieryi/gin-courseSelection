@@ -11,7 +11,6 @@ import (
  @Description: 课程
 */
 
-
 type Course struct {
 	ID        int64  `gorm:"auto_increment"`
 	Name      string `gorm:"not null"`

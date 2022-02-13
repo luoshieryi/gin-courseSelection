@@ -65,6 +65,7 @@ func ConnRedis() {
 	redis.SetRedis()
 }
 
+
 func init() {
 	Init()
 	ConnRedis()

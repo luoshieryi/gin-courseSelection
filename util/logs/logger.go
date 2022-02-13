@@ -31,11 +31,7 @@ const (
 )
 
 func PrintLogErr(level Level, msg string, err interface{}) {
-<<<<<<< HEAD
 	pc, _, _, _ := runtime.Caller(1)
-=======
-	pc,_,_,_ := runtime.Caller(1)
->>>>>>> dev
 	log.Printf("%s[%s]%s | [%s] %s : %v\n",
 		red, level, reset,
 		runtime.FuncForPC(pc).Name(),
@@ -46,8 +42,4 @@ func PrintLogErr(level Level, msg string, err interface{}) {
 
 func PrintLog(msg ...interface{}) {
 	log.Println(msg...)
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> dev

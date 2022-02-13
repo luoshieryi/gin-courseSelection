@@ -124,10 +124,8 @@ func GetTeacherCourse(request types.GetTeacherCourseRequest) ([]*types.TCourse, 
 	return tcource, types.OK
 }
 
-
-
-
 func BookCourse(courseId, stuId string) error {
+
 	if dao.StuHaveCourse(courseId, stuId) {
 		return StuHaveCourse
 	}

@@ -76,7 +76,6 @@ func GetCourseCap(name string) (int, error) {
 	return now.Cap, nil
 }
 
-
 func BookCourse(courseId, stuId string) error {
 	// 先写入redis，做记录，再写入数据库
 	// 课程ID+用户ID -> 是否存在
@@ -102,4 +101,3 @@ func StuHaveCourse(courseId, stuId string) bool {
 	}
 	return true
 }
-
