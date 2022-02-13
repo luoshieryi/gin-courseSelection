@@ -4,7 +4,6 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
-	"project/config"
 )
 
 var (
@@ -17,11 +16,16 @@ func Init() {
 		"mysql",
 		fmt.Sprintf(
 			"%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local",
-			config.Mysql.Username,
-			config.Mysql.Password,
-			config.Mysql.Host,
-			config.Mysql.Port,
-			config.Mysql.Database,
+			//config.Mysql.Username,
+			//config.Mysql.Password,
+			//config.Mysql.Host,
+			//config.Mysql.Port,
+			//config.Mysql.Database,
+			"root",
+			"bytedancecamp",
+			"180.184.74.141",
+			3306,
+			"courseSelection",
 		),
 	)
 	if err != nil {
@@ -44,6 +48,7 @@ func migrate() {
 	DB.AutoMigrate(&Member{})
 	DB.AutoMigrate(&Session{})
 	DB.AutoMigrate(&Course{})
+	DB.AutoMigrate(&StudentCourse{})
 }
 
 func Close() {

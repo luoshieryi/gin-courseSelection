@@ -54,3 +54,47 @@ func GetCourseByTeacherId(TeacherID int64) ([]*types.TCourse, error) {
 	}
 	return courses, err
 }
+
+/*
+ @Author: as
+ @Date: Creat in 15:52 2022/2/12
+ @Description: user.go
+*/
+
+// GetCourseCap 获取课程当前的容量
+func GetCourseCap(name string) (int, error) {
+	// 从数据库拿
+	c := model.Course{}
+	c.Name = name
+	now, err := c.GetNowCourse()
+	if err != nil {
+		return 0, err
+	}
+	return now.Cap, nil
+}
+
+// BookCourse 成功抢到课
+func BookCourse(courseID, studentID string) error {
+	cID, _ := strconv.ParseInt(courseID, 10, 64)
+	sID, _ := strconv.ParseInt(studentID, 10, 64)
+	sc := model.StudentCourse{
+		StudentID: sID,
+		CourseID:  cID,
+	}
+	err := model.DB.Create(&sc).Error
+	return err
+}
+
+func StuHaveCourse(courseID, studentID string) bool {
+	cID, _ := strconv.ParseInt(courseID, 10, 64)
+	sID, _ := strconv.ParseInt(studentID, 10, 64)
+	sc := model.StudentCourse{
+		StudentID: sID,
+		CourseID:  cID,
+	}
+	model.DB.Find(&sc, "courseID = ? AND studentID = ?", cID, sID)
+	if sc.ID == 0 {
+		return false
+	}
+	return true
+}

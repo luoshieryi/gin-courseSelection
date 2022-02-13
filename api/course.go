@@ -93,3 +93,26 @@ func GetTeacherCourse(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, resp.GetTeacherCourseRes(errNo, TCourses))
 }
+
+// BookCourse 抢课
+func BookCourse(c *gin.Context) {
+
+	q := types.BookCourseRequest{}
+	if err := c.ShouldBind(&q); err != nil {
+		c.JSON(200, types.BookCourseResponse{Code: types.ParamInvalid})
+		return
+	}
+
+	// 抢课
+	switch service.BookCourse(q.CourseID, q.StudentID) {
+	case service.CourseOver:
+		c.JSON(200, types.BookCourseResponse{Code: types.CourseNotAvailable})
+	case service.StuHaveCourse:
+		c.JSON(200, types.BookCourseResponse{Code: types.StudentHasCourse})
+	case nil:
+		c.JSON(200, types.BookCourseResponse{Code: types.OK})
+	default:
+		c.JSON(200, types.BookCourseResponse{Code: types.UnknownError})
+	}
+
+}
