@@ -7,16 +7,17 @@ import (
 	"sync"
 )
 
-/*
- @Author: as
- @Date: Creat in 15:52 2022/2/12
- @Description: user.go
-*/
-
 var (
 	CourseOver = errors.New("Course No Cap")
 	StuHaveCourse=errors.New("Stu have this Course")
 )
+
+// CreateCourse 创建课程
+func CreateCourse(request types.CreateCourseRequest) (string, types.ErrNo) {
+	course := dao.GetCourseByName(request.Name)
+	if course.ID != 0 {
+		return strconv.FormatInt(course.ID, 10), types.UnknownError
+	}
 
 func BookCourse(courseId, stuId string) error {
 	//TODO: 查看是否绑定
@@ -117,4 +118,75 @@ func (c *courseInfo) bookCourse() {
 			return
 		}
 	}
+}
+
+func BindCourse(request types.BindCourseRequest) types.ErrNo {
+	Id, err := strconv.ParseInt(request.CourseID, 10, 64)
+	if err != nil {
+		return types.UnknownError
+	}
+
+	teacherId, err := strconv.ParseInt(request.TeacherID, 10, 64)
+	if err != nil {
+		return types.UnknownError
+	}
+
+	res := dao.GetCourseById(Id)
+	if res.ID == 0 {
+		return types.CourseNotExisted
+	}
+	if res.TeacherID != 0 {
+		return types.CourseHasBound
+	}
+
+	res.TeacherID = teacherId
+	err = dao.UpdateCourse(res)
+	if err != nil {
+		return types.UnknownError
+	}
+	return types.OK
+}
+
+//其实teacherid用不上
+func UnbindCourse(request types.UnbindCourseRequest) types.ErrNo {
+	Id, err := strconv.ParseInt(request.CourseID, 10, 64)
+	if err != nil {
+		return types.UnknownError
+	}
+
+	teacherId, err := strconv.ParseInt(request.TeacherID, 10, 64)
+	if err != nil {
+		return types.UnknownError
+	}
+
+	res := dao.GetCourseById(Id)
+	if res.ID == 0 {
+		return types.CourseNotExisted
+	}
+	if res.TeacherID == 0 {
+		return types.CourseNotBind
+	}
+	if res.TeacherID != teacherId {
+		return types.UnknownError
+	}
+	res.TeacherID = 0
+	println(res.ID)
+	err = dao.DeleteTeacherByID(res.ID)
+	if err != nil {
+		return types.UnknownError
+	}
+	return types.OK
+}
+
+func GetTeacherCourse(request types.GetTeacherCourseRequest) ([]*types.TCourse, types.ErrNo) {
+	tcource := make([]*types.TCourse, 0)
+	TeacherID, err := strconv.ParseInt(request.TeacherID, 10, 64)
+	if err != nil {
+		return tcource, types.UnknownError
+	}
+	tcource, err = dao.GetCourseByTeacherId(TeacherID)
+	if err != nil {
+		return tcource, types.UnknownError
+	}
+	return tcource, types.OK
 }

@@ -4,7 +4,6 @@ import (
 	"project/dao"
 	"project/model"
 	"project/types"
-	"project/util/hash"
 	"strconv"
 )
 
@@ -15,15 +14,10 @@ func CreateMember(request types.CreateMemberRequest) (string, types.ErrNo) {
 		return strconv.FormatInt(member.ID, 10), types.UserHasExisted
 	}
 
-	//密码加密
-	bytes, err := hash.NewHash().Make([]byte(request.Password))
-	if err != nil {
-		return "", types.UnknownError
-	}
 	entity := model.Member{
 		Nickname: request.Nickname,
 		Username: request.Username,
-		Password: string(bytes),
+		Password: request.Password,
 		UserType: int(request.UserType),
 		Deleted:  false,
 	}
@@ -105,6 +99,9 @@ func DeleteMember(request types.DeleteMemberRequest) types.ErrNo {
 	member := dao.GetMemberByID(_id)
 	if member.ID == 0 {
 		return types.UserNotExisted
+	}
+	if member.Deleted {
+		return types.UserHasDeleted
 	}
 
 	member.Deleted = true

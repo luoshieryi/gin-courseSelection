@@ -95,8 +95,8 @@ type GetMemberResponse struct {
 // 批量获取成员信息
 
 type GetMemberListRequest struct {
-	Offset int
-	Limit  int
+	Offset int `binding:"min=0"`
+	Limit  int `binding:"min=0"`
 }
 
 type GetMemberListResponse struct {
@@ -132,8 +132,8 @@ type DeleteMemberResponse struct {
 // 登录
 
 type LoginRequest struct {
-	Username string `form:"Username" json:"Username" binding:"required"`
-	Password string `form:"Password" json:"Password" binding:"required"`
+	Username string `binding:"required,min=8,max=20,alpha"`                                                                                                  // required，只支持大小写，长度不小于 8 位 不超过 20 位
+	Password string `binding:"required,min=8,alphanum,containsany=abcdefghijklmnopqrstuvwxyz,containsany=0123456789,containsany=ABCDEFGHIJKLMNOPQRSTUVWXYZ"` // required，同时包括大小写、数字，长度不少于 8 位 不超过 20 位
 }
 
 // 登录成功后需要 Set-Cookie("camp-session", ${value})
@@ -188,7 +188,7 @@ type CreateCourseResponse struct {
 // 获取课程
 // Method: Get
 type GetCourseRequest struct {
-	CourseID string
+	CourseID string `binding:"required,numeric"`
 }
 
 type GetCourseResponse struct {
@@ -201,8 +201,8 @@ type GetCourseResponse struct {
 // 注：这里的 teacherID 不需要做已落库校验
 // 一个老师可以绑定多个课程 , 不过，一个课程只能绑定在一个老师下面
 type BindCourseRequest struct {
-	CourseID  string
-	TeacherID string
+	CourseID  string `binding:"required,numeric"`
+	TeacherID string `binding:"required,numeric"`
 }
 
 type BindCourseResponse struct {
@@ -212,8 +212,8 @@ type BindCourseResponse struct {
 // 老师解绑课程
 // Method： Post
 type UnbindCourseRequest struct {
-	CourseID  string
-	TeacherID string
+	CourseID  string `binding:"required,numeric"`
+	TeacherID string `binding:"required,numeric"`
 }
 
 type UnbindCourseResponse struct {
@@ -223,7 +223,7 @@ type UnbindCourseResponse struct {
 // 获取老师下所有课程
 // Method：Get
 type GetTeacherCourseRequest struct {
-	TeacherID string
+	TeacherID string `binding:"required,numeric"`
 }
 
 type GetTeacherCourseResponse struct {
@@ -245,8 +245,8 @@ type ScheduleCourseResponse struct {
 }
 
 type BookCourseRequest struct {
-	StudentID string
-	CourseID  string
+	StudentID string `binding:"required,numeric"`
+	CourseID  string `binding:"required,numeric"`
 }
 
 // 课程已满返回 CourseNotAvailable
@@ -256,7 +256,7 @@ type BookCourseResponse struct {
 }
 
 type GetStudentCourseRequest struct {
-	StudentID string
+	StudentID string `binding:"required,numeric"`
 }
 
 type GetStudentCourseResponse struct {

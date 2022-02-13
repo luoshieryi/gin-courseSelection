@@ -40,3 +40,52 @@ func BookCourse(c *gin.Context) {
 	}
 
 }
+
+func BindCourse(c *gin.Context) {
+	request := types.BindCourseRequest{}
+	err := c.ShouldBind(&request)
+
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, resp.BindCourseRes(types.ParamInvalid))
+		return
+	}
+
+	errNo := service.BindCourse(request)
+	if errNo != 0 {
+		c.JSON(http.StatusBadRequest, resp.BindCourseRes(errNo))
+		return
+	}
+	c.JSON(http.StatusOK, resp.BindCourseRes(errNo))
+}
+
+func UnbindCourse(c *gin.Context) {
+	request := types.UnbindCourseRequest{}
+	err := c.ShouldBind(&request)
+
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, resp.UnbindCourseRes(types.ParamInvalid))
+		return
+	}
+
+	errNo := service.UnbindCourse(request)
+	if errNo != 0 {
+		c.JSON(http.StatusBadRequest, resp.UnbindCourseRes(errNo))
+		return
+	}
+	c.JSON(http.StatusOK, resp.UnbindCourseRes(errNo))
+}
+
+func GetTeacherCourse(c *gin.Context) {
+	request := types.GetTeacherCourseRequest{}
+	err := c.ShouldBind(&request)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, resp.GetTeacherCourseRes(types.ParamInvalid, []*types.TCourse{}))
+		return
+	}
+	TCourses, errNo := service.GetTeacherCourse(request)
+	if errNo != 0 {
+		c.JSON(http.StatusBadRequest, resp.GetTeacherCourseRes(errNo, TCourses))
+		return
+	}
+	c.JSON(http.StatusOK, resp.GetTeacherCourseRes(errNo, TCourses))
+}

@@ -14,7 +14,7 @@ func Login(c *gin.Context) {
 
 	err := c.ShouldBind(&request)
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, resp.LoginRes(types.ParamInvalid, ""))
+		c.JSON(http.StatusUnprocessableEntity, resp.LoginRes(types.WrongPassword, ""))
 		return
 	}
 
