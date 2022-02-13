@@ -6,35 +6,34 @@ import (
 	"strconv"
 )
 
-func CreateCourse(course model.Course) (int64, error) {
-	err := model.DB.Create(&course).Error
-	if err != nil {
+/*
+ @Author: as
+ @Date: Creat in 15:52 2022/2/12
+ @Description: user.go
+*/
+
+// GetCourseCap 获取课程当前的容量
+func GetCourseCap(name string) (int, error) {
+	// 从数据库拿
+	c := model.Course{}
+	c.Name=name
+	now,err:=c.GetNowCourse()
+	if err!=nil{
 		return 0, err
 	}
-	return course.ID, nil
+	return now.Cap, nil
 }
 
-// GetCourseByName 通过课程名查询课程
-func GetCourseByName(name string) model.Course {
-	course := model.Course{}
+// BookCourse 成功抢到课
+//TODO: 用户写入抢到的课
+func BookCourse(courseId,stuId string)error{
 
-	model.DB.Find(&course, "name = ?", name)
-
-	return course
+	return nil
 }
 
-// GetCourseById 通过ID查询课程
-func GetCourseById(id int64) model.Course {
-	course := model.Course{}
-	model.DB.Find(&course, "id = ?", id)
-	return course
-}
-
-// UpdateCourse 更新课程信息
-func UpdateCourse(course model.Course) error {
-	err := model.DB.Model(&course).Update(&course).Error
-
-	return err
+//TODO: 用户是否拥有该课程
+func StuHaveCourse(courseId,stuId string)bool{
+	return false
 }
 
 func DeleteTeacherByID(id int64) error {
