@@ -10,6 +10,11 @@ import (
 	"sync"
 )
 
+var (
+	CourseOver    = errors.New("Course No Cap")
+	StuHaveCourse = errors.New("Stu have this Course")
+)
+
 // CreateCourse 创建课程
 func CreateCourse(request types.CreateCourseRequest) (string, types.ErrNo) {
 	course := dao.GetCourseByName(request.Name)
@@ -119,13 +124,10 @@ func GetTeacherCourse(request types.GetTeacherCourseRequest) ([]*types.TCourse, 
 	return tcource, types.OK
 }
 
-var (
-	CourseOver    = errors.New("Course No Cap")
-	StuHaveCourse = errors.New("Stu have this Course")
-)
+
+
 
 func BookCourse(courseId, stuId string) error {
-	//TODO: 查看是否绑定
 	if dao.StuHaveCourse(courseId, stuId) {
 		return StuHaveCourse
 	}

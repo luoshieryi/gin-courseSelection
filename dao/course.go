@@ -3,6 +3,8 @@ package dao
 import (
 	"project/model"
 	"project/types"
+	"project/util/logs"
+	"project/util/pro"
 	"strconv"
 )
 
@@ -46,7 +48,7 @@ func DeleteTeacherByID(id int64) error {
 // GetCourseByTeacherId 得到老师的ID对应的课程
 func GetCourseByTeacherId(TeacherID int64) ([]*types.TCourse, error) {
 	res := make([]model.Course, 0)
-	err := model.DB.Find(&res, "teacher_id = ?", TeacherID).Error
+	err := model.DB.Find(&res, "TeacherID = ?", TeacherID).Error
 	courses := make([]*types.TCourse, 0)
 	for _, data := range res {
 		course := types.TCourse{CourseID: strconv.FormatInt(data.ID, 10), Name: data.Name, TeacherID: strconv.FormatInt(data.TeacherID, 10)}
@@ -58,7 +60,7 @@ func GetCourseByTeacherId(TeacherID int64) ([]*types.TCourse, error) {
 /*
  @Author: as
  @Date: Creat in 15:52 2022/2/12
- @Description: user.go
+ @Description: 课程
 */
 
 // GetCourseCap 获取课程当前的容量
@@ -73,28 +75,30 @@ func GetCourseCap(name string) (int, error) {
 	return now.Cap, nil
 }
 
-// BookCourse 成功抢到课
-func BookCourse(courseID, studentID string) error {
-	cID, _ := strconv.ParseInt(courseID, 10, 64)
-	sID, _ := strconv.ParseInt(studentID, 10, 64)
-	sc := model.StudentCourse{
-		StudentID: sID,
-		CourseID:  cID,
+
+func BookCourse(courseId, stuId string) error {
+	// 先写入redis，做记录，再写入数据库
+	// 课程ID+用户ID -> 是否存在
+	if err:= model.Cahce.Set(courseId+"-"+stuId,1);err!=nil{
+		logs.PrintLogErr(logs.DB,"set cache error",err)
+		return err
 	}
-	err := model.DB.Create(&sc).Error
-	return err
+	stu:=model.StuCourse{
+		CourseID: courseId,
+		StuID:    stuId,
+	}
+	// 协程，资源的肯定会有一定消耗
+	go pro.AddTask(stu.MustAdd)
+	return nil
 }
 
-func StuHaveCourse(courseID, studentID string) bool {
-	cID, _ := strconv.ParseInt(courseID, 10, 64)
-	sID, _ := strconv.ParseInt(studentID, 10, 64)
-	sc := model.StudentCourse{
-		StudentID: sID,
-		CourseID:  cID,
-	}
-	model.DB.Find(&sc, "courseID = ? AND studentID = ?", cID, sID)
-	if sc.ID == 0 {
+// StuHaveCourse 用户是否拥有该课程
+func StuHaveCourse(courseId, stuId string) bool {
+	// 从redis中获取
+	val, err := model.Cahce.Get(courseId + "-" + stuId)
+	if err!=nil||val==nil{
 		return false
 	}
 	return true
 }
+

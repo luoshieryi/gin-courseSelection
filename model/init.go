@@ -4,10 +4,14 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
+
+	"project/util/cache"
+	"project/util/pro"
 )
 
 var (
 	DB  *gorm.DB
+	Cahce cache.Cache
 	err error
 )
 
@@ -47,19 +51,21 @@ func Init() {
 func migrate() {
 	DB.AutoMigrate(&Member{})
 	DB.AutoMigrate(&Session{})
-	DB.AutoMigrate(&Course{})
-	DB.AutoMigrate(&StudentCourse{})
+
+	InitCourse()
+	InitStuCourse()
 }
 
 func Close() {
-	defer func(DB *gorm.DB) {
-		err := DB.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(DB)
+	defer DB.Close()
+}
+
+func SetCache() {
+	Cahce=cache.NewCache()
 }
 
 func init() {
 	Init()
+	SetCache()
+	pro.SetPro()
 }

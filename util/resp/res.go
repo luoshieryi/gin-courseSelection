@@ -41,12 +41,15 @@ func CreateCourseRes(code types.ErrNo, courseID string) types.CreateCourseRespon
 func GetCourseRes(code types.ErrNo, data types.TCourse) types.GetCourseResponse {
 	return types.GetCourseResponse{Code: code, Data: data}
 }
+
 func BindCourseRes(code types.ErrNo) types.BindCourseResponse {
 	return types.BindCourseResponse{Code: code}
 }
+
 func UnbindCourseRes(code types.ErrNo) types.UnbindCourseResponse {
 	return types.UnbindCourseResponse{Code: code}
 }
+
 func ScheduleCourseRes(code types.ErrNo, data map[string]string) types.ScheduleCourseResponse {
 	return types.ScheduleCourseResponse{Code: code, Data: data}
 }

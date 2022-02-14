@@ -5,18 +5,19 @@ import (
 	"project/util/logs"
 )
 
+/*
+ @Author: as
+ @Date: Creat in 15:24 2022/2/12
+ @Description: 课程
+*/
+
+
 type Course struct {
 	ID        int64  `gorm:"auto_increment"`
 	Name      string `gorm:"not null"`
 	Cap       int    `gorm:"not null"`
 	TeacherID int64  `gorm:""`
 }
-
-/*
- @Author: as
- @Date: Creat in 15:24 2022/2/12
- @Description: 课程
-*/
 
 func InitCourse() {
 	if DB.HasTable(&Course{}) {
