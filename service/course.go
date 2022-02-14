@@ -124,9 +124,6 @@ func GetTeacherCourse(request types.GetTeacherCourseRequest) ([]*types.TCourse, 
 	return tcource, types.OK
 }
 
-
-
-
 func BookCourse(courseId, stuId string) error {
 	if dao.StuHaveCourse(courseId, stuId) {
 		return StuHaveCourse
@@ -176,11 +173,13 @@ func getCourseInfo(courseId string) (*courseInfo, error) {
 		}
 		allCourse.Store(courseId, &info)
 		info.monitor() // 开始监听
+	} else {
+		info, ok = val.(*courseInfo)
+		if !ok {
+			return info, errors.New("Unknown error")
+		}
 	}
-	info, ok = val.(*courseInfo)
-	if !ok {
-		return info, errors.New("Unknown error")
-	}
+
 	return info, nil
 }
 
