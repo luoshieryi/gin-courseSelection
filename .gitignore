@@ -16,3 +16,6 @@
 # vendor/
 .idea
 
+# config
+
+*.ini
