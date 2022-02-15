@@ -17,4 +17,4 @@
 .idea
 
 # Config
-.ini
+*.ini
