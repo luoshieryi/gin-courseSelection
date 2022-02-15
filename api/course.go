@@ -97,6 +97,7 @@ func GetTeacherCourse(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, resp.GetTeacherCourseRes(errNo, TCourses))
 		return
 	}
+	c.JSON(http.StatusOK, resp.GetTeacherCourseRes(errNo, TCourses))
 }
 
 // BookCourse 抢课
@@ -120,4 +121,19 @@ func BookCourse(c *gin.Context) {
 		c.JSON(200, types.BookCourseResponse{Code: types.UnknownError})
 	}
 
+}
+
+func GetStudentCourses(c *gin.Context) {
+	request := types.GetStudentCourseRequest{}
+	err := c.ShouldBind(&request)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, resp.GetStudentCourseRes(types.ParamInvalid, []types.TCourse{}))
+		return
+	}
+	TCourses, errNo := service.GetStudentCourses(request)
+	if errNo != 0 {
+		c.JSON(http.StatusBadRequest, resp.GetStudentCourseRes(errNo, TCourses))
+		return
+	}
+	c.JSON(http.StatusOK, resp.GetStudentCourseRes(errNo, TCourses))
 }
