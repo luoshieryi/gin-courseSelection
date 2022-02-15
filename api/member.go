@@ -13,7 +13,7 @@ func CreateMember(c *gin.Context) {
 
 	auth, err := c.Cookie("camp-session")
 	if err != nil {
-		c.JSON(http.StatusForbidden, resp.CreateMemberRes(types.PermDenied, ""))
+		c.JSON(http.StatusForbidden, resp.CreateMemberRes(types.LoginRequired, ""))
 		return
 	}
 	userType := service.GetUserTypeByCookie(auth)
