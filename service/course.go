@@ -156,6 +156,7 @@ var allCourse = sync.Map{}
 
 func getCourseInfo(courseId string) (*courseInfo, error) {
 	var info *courseInfo
+	fmt.Println(courseId)
 	val, ok := allCourse.Load(courseId)
 	if !ok {
 		ccap, err := dao.GetCourseCap(courseId)
@@ -171,11 +172,12 @@ func getCourseInfo(courseId string) (*courseInfo, error) {
 			close:  make(chan struct{}),
 			lock:   &sync.Mutex{},
 		}
-		allCourse.Store(courseId, &info)
+		allCourse.Store(courseId, info)
 		info.monitor() // 开始监听
 	} else {
 		fmt.Println(val)
 		info, ok = val.(*courseInfo)
+		fmt.Println(info)
 		if !ok {
 			fmt.Println("notOk")
 			return info, errors.New("Unknown error")
