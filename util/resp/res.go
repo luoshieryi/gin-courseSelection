@@ -57,3 +57,7 @@ func ScheduleCourseRes(code types.ErrNo, data map[string]string) types.ScheduleC
 func GetTeacherCourseRes(code types.ErrNo, data []*types.TCourse) types.GetTeacherCourseResponse {
 	return types.GetTeacherCourseResponse{Code: code, Data: struct{ CourseList []*types.TCourse }{CourseList: data}}
 }
+
+func GetStudentCourseRes(code types.ErrNo, data []types.TCourse) types.GetStudentCourseResponse {
+	return types.GetStudentCourseResponse{Code: code, Data: struct{ CourseList []types.TCourse }{CourseList: data}}
+}

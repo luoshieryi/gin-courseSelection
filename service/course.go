@@ -231,3 +231,24 @@ func (c *courseInfo) bookCourse() {
 		}
 	}
 }
+
+func GetStudentCourses(request types.GetStudentCourseRequest) ([]types.TCourse, types.ErrNo) {
+	tCourses := make([]types.TCourse, 0)
+
+	student, errNo := GetMember(types.GetMemberRequest{UserID: request.StudentID})
+	if errNo != 0 || student.UserType == 3 {
+		return tCourses, types.StudentNotExisted
+	}
+	courseIDs, err := dao.GetCourseIDsByStudentID(request.StudentID)
+	if err != nil || len(courseIDs) == 0 {
+		return tCourses, types.StudentHasNoCourse
+	}
+	for _, ID := range courseIDs {
+		tCourse, errNO := GetCourse(types.GetCourseRequest{CourseID: ID})
+		if errNO != 0 {
+			return []types.TCourse{}, errNO
+		}
+		tCourses = append(tCourses, tCourse)
+	}
+	return tCourses, types.OK
+}
