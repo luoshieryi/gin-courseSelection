@@ -26,11 +26,6 @@ func Init() {
 			config.Mysql.Host,
 			config.Mysql.Port,
 			config.Mysql.Database,
-			//"root",
-			//"bytedancecamp",
-			//"180.184.74.141",
-			//3306,
-			//"courseSelection",
 		),
 	)
 	if err != nil {
