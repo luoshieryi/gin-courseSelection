@@ -25,7 +25,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("camp-session", auth, 30*24*60*60, "/", "localhost", false, true)
+	c.SetCookie("camp-session", auth, 30*24*60*60, "/", "180.184.74.141", false, true)
 	c.JSON(http.StatusOK, resp.LoginRes(errNo, id))
 }
 

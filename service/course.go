@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"project/dao"
 	"project/model"
 	"project/types"
@@ -104,7 +103,7 @@ func UnbindCourse(request types.UnbindCourseRequest) types.ErrNo {
 		return types.UnknownError
 	}
 	res.TeacherID = 0
-	println(res.ID)
+	//println(res.ID)
 	err = dao.DeleteTeacherByID(res.ID)
 	if err != nil {
 		return types.UnknownError
@@ -174,10 +173,10 @@ func getCourseInfo(courseId string) (*courseInfo, error) {
 		allCourse.Store(courseId, &info)
 		info.monitor() // 开始监听
 	} else {
-		fmt.Println(val)
+		//fmt.Println(val)
 		info, ok = val.(*courseInfo)
 		if !ok {
-			fmt.Println("notOk")
+			//fmt.Println("notOk")
 			return info, errors.New("Unknown error")
 		}
 	}
@@ -194,7 +193,7 @@ func (c *courseInfo) bookOne(courseId, stuId string) error {
 	}
 	c.getOne()
 
-	fmt.Println("bookOneError")
+	//fmt.Println("bookOneError")
 	// DB写入肯定比抢课的流程慢
 	return dao.BookCourse(courseId, stuId)
 }

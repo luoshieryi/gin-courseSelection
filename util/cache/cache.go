@@ -1,5 +1,7 @@
 package cache
 
+import "fmt"
+
 /*
  @Author: as
  @Date: Creat in 14:23 2022/2/14
@@ -12,11 +14,10 @@ type Cache interface {
 }
 
 func NewCache() Cache {
-	//c := NewClient()
-	//fmt.Println(c)
-	//if c == nil {
-	//	return NewGoCache()
-	//}
-	c := NewGoCache()
+	c := NewClient()
+	fmt.Println(c)
+	if c == nil {
+		return NewGoCache()
+	}
 	return c
 }
