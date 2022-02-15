@@ -55,7 +55,7 @@
 
 ## 2.13 day4
 
-- 完成了抢课模块
+- as大大初步完成了抢课模块和日志模块
 
 ### 使用 tmux "部署"服务
 
@@ -82,3 +82,19 @@ ctrl+b
   D #选择脱离会话(同时开启多个会话)
   s #选择并切换会话
 ```
+
+## 2.14 day5
+
+testing and fix bugs and tough fishes
+
+- There is a little problem about redis in server, use go-cache instead
+
+## 2.15 day6 
+
+testing and fix bugs and tough fishes
+
+- finished the last method GetStudentCourses 
+- finish design document
+- deploy project to server
+
+The END(?)
