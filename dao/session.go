@@ -13,7 +13,7 @@ func CreateSession(userId int64) (string, error) {
 	session := model.Session{
 		UserID:  userId,
 		Auth:    auth,
-		Expires: time.Now().Add(30), //30天后过期
+		Expires: time.Now().Add(30 * 24 * time.Hour), //30天后过期
 	}
 
 	err := model.DB.Create(&session).Error
