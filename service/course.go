@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"project/dao"
 	"project/model"
 	"project/types"
@@ -137,7 +138,6 @@ func BookCourse(courseId, stuId string) error {
 	if info.isOver {
 		return CourseOver
 	}
-
 	return info.bookOne(courseId, stuId)
 
 }
@@ -174,8 +174,10 @@ func getCourseInfo(courseId string) (*courseInfo, error) {
 		allCourse.Store(courseId, &info)
 		info.monitor() // 开始监听
 	} else {
+		fmt.Println(val)
 		info, ok = val.(*courseInfo)
 		if !ok {
+			fmt.Println("notOk")
 			return info, errors.New("Unknown error")
 		}
 	}
@@ -191,6 +193,8 @@ func (c *courseInfo) bookOne(courseId, stuId string) error {
 		return CourseOver
 	}
 	c.getOne()
+
+	fmt.Println("bookOneError")
 	// DB写入肯定比抢课的流程慢
 	return dao.BookCourse(courseId, stuId)
 }

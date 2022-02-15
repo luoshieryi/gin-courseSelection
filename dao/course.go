@@ -75,15 +75,14 @@ func GetCourseCap(name string) (int, error) {
 	return now.Cap, nil
 }
 
-
 func BookCourse(courseId, stuId string) error {
 	// 先写入redis，做记录，再写入数据库
 	// 课程ID+用户ID -> 是否存在
-	if err:= model.Cahce.Set(courseId+"-"+stuId,1);err!=nil{
-		logs.PrintLogErr(logs.DB,"set cache error",err)
+	if err := model.Cahce.Set(courseId+"-"+stuId, 1); err != nil {
+		logs.PrintLogErr(logs.DB, "set cache error", err)
 		return err
 	}
-	stu:=model.StuCourse{
+	stu := model.StuCourse{
 		CourseID: courseId,
 		StuID:    stuId,
 	}
@@ -94,11 +93,10 @@ func BookCourse(courseId, stuId string) error {
 
 // StuHaveCourse 用户是否拥有该课程
 func StuHaveCourse(courseId, stuId string) bool {
-	// 从redis中获取
+	// 从缓存中获取
 	val, err := model.Cahce.Get(courseId + "-" + stuId)
-	if err!=nil||val==nil{
+	if err != nil || val == nil {
 		return false
 	}
 	return true
 }
-

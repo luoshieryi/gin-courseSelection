@@ -7,14 +7,16 @@ package cache
 */
 
 type Cache interface {
-	Get(k string)(interface{},error)
-	Set(args ...interface{})error
+	Get(k string) (interface{}, error)
+	Set(args ...interface{}) error
 }
 
-func NewCache()Cache{
-	c:=NewClient()
-	if c==nil{
-		return NewGoCache()
-	}
+func NewCache() Cache {
+	//c := NewClient()
+	//fmt.Println(c)
+	//if c == nil {
+	//	return NewGoCache()
+	//}
+	c := NewGoCache()
 	return c
 }
