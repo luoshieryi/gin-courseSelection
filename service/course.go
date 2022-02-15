@@ -170,7 +170,7 @@ func getCourseInfo(courseId string) (*courseInfo, error) {
 			close:  make(chan struct{}),
 			lock:   &sync.Mutex{},
 		}
-		allCourse.Store(courseId, &info)
+		allCourse.Store(courseId, info)
 		info.monitor() // 开始监听
 	} else {
 		//fmt.Println(val)
