@@ -1,6 +1,6 @@
 # Gin 简单选排课系统
 
-与 [@z-anshun](https://github.com/z-anshun) 大佬和 [@the-xin](https://github.com/the-xin) 大佬  
+与 [@z-anshun](https://github.com/z-anshun) 大佬和 [@thexin](https://github.com/thexin7) 大佬  
 合作完成的bytedancecamp后端第八期作业, 赶ddl与咕咕咕中)
 
 [设计文档](./docs/design.md)
